@@ -60,25 +60,43 @@ async function deleteUser(id) {
     return usuarioBorrado;
 }
 
-module.exports={
+async function editUser(id, newData) {
+    // Obtener el usuario existente de la base de datos
+    var usuarioExistente = await busXId(id);
+    var usuarioEditado = false;
+
+    // Si el usuario existe, proceder con la edición
+    if (usuarioExistente) {
+        // Crear un objeto con solo los campos permitidos para actualizar
+        const usuarioActualizado = {};
+
+        if (newData.nombre !== undefined) {
+            usuarioActualizado.nombre = newData.nombre;
+        }
+        if (newData.usuario !== undefined) {
+            usuarioActualizado.usuario = newData.usuario;
+        }
+        if (newData.password !== undefined) {
+            usuarioActualizado.password = newData.password;
+        }
+
+        // Validar si hay al menos un campo que actualizar
+        if (Object.keys(usuarioActualizado).length > 0) {
+            // Actualizar el usuario en la base de datos
+            await usuariosBD.doc(id).update(usuarioActualizado);
+            usuarioEditado = true;
+        }
+    }
+
+    return usuarioEditado;
+}
+
+
+module.exports = {
     mostrarUsuarios,
     busXId,
     deleteUser,
-    newUser
-}
+    newUser,
+    editUser // Exportar la función
+};
 
-//deleteUser("100");
-
-/*data={
-    nombre:"Juana Martinez",
-    usuario:"abc",
-    password:"abc"
-}
-
-async function prueba() {
-    console.log(await newUser(data));
-}
-
-prueba();*/
-//busXId("300");
-//mostrarUsuarios();

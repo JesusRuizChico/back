@@ -56,9 +56,26 @@ async function deleteProd(id) {
     return productoBorrado;
 }
 
+// Editar producto por ID
+async function editarProd(id, data) {
+    const productoExistente = await busXId(id);
+    var productoActualizado = false;
+
+    if (productoExistente) {
+        const productoNuevo = new Producto(data);
+
+        if (validarDatos(productoNuevo.getProducto)) {
+            await productosBD.doc(id).update(productoNuevo.getProducto);
+            productoActualizado = true;
+        }
+    }
+    return productoActualizado;
+}
+
 module.exports = {
     mostrarProductos,
     busXId,
     deleteProd,
-    newProd
+    newProd,
+    editarProd
 };
